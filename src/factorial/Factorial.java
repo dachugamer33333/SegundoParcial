@@ -15,15 +15,36 @@ public class Factorial {
 	
 	public static int factorialIterativo(int n)
 	{
-		return 1;
+		if(n< 0)
+		{
+			throw new IllegalArgumentException("no definido para negativos bro");
+		}
+		int fact = 1;
+		while(n>0)
+		{
+			fact = n*fact;
+			n--;
+		}
+		return fact;
 	}
 	
 	public static void main(String[] args) {
 		int num = 5;
-		int factorialNum = factorialRecursivo(num);
+		int factorialNumRecursivo = factorialRecursivo(num);
+		
+		int num1 = 6;
+		int factorialNumIterativo= factorialIterativo(num1);
+		
 		System.out.printf("""
+				Factorial Recursivo
 				numero base: %d
 				numero factorial %d
-				""", num, factorialNum);
+				""", num, factorialNumRecursivo);
+		System.out.printf("""
+				Factorial Iterativo
+				numero base: %d
+				numero factorial %d
+				""", num1, factorialNumIterativo);
 	}
+		
 }
