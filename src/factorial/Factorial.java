@@ -29,7 +29,7 @@ public class Factorial {
 	}
 	
 	public static void main(String[] args) {
-		int num = 12;
+		int num = 12; //no mayor a 12 debido al desbordamiento
 		int factorialNumRecursivo = factorialRecursivo(num);
 		
 		int num1 = 6;
