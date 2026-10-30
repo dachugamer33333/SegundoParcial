@@ -10,7 +10,7 @@ public class Factorial {
 		if(n<=1) {
 			return 1;
 		}
-		return n * factorialRecursivo(n-1);
+		return Math.multiplyExact(n, factorialRecursivo(n-1));
 	}
 	
 	public static int factorialIterativo(int n)
@@ -22,14 +22,14 @@ public class Factorial {
 		int fact = 1;
 		while(n>0)
 		{
-			fact = n*fact;
+			fact = Math.multiplyExact(fact, n);
 			n--;
 		}
 		return fact;
 	}
 	
 	public static void main(String[] args) {
-		int num = 5;
+		int num = 12; //no mayor a 12 debido al desbordamiento
 		int factorialNumRecursivo = factorialRecursivo(num);
 		
 		int num1 = 6;

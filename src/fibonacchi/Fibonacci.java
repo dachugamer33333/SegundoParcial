@@ -18,39 +18,30 @@ public class Fibonacci {
 	}
 	public static int fibonacciIterativo(int n)
 	{
-		int fibo=0;
-		int fiba=0;
-		int fibb=0;
-		int i=0;
-		if(n<0)
-		{
-			throw new IllegalArgumentException("Valor debe ser mayor a 0");
-		}
-		if(n==1 || n==0)
-		{
-			fibo= n;
-		}
-		else
-		{
-			fiba =0;
-			fibb =1;
-			i=2;
-		}
-		while(i<=n)
-		{
-			fibo=fibb+fiba;
-			fiba=fibb;
-			fibb=fibo;
-			i++;
-		}
-		return fibo;
+	    if(n<0)
+	    {
+	        throw new IllegalArgumentException("El valor no puede ser negativo");
+	    }
+	    if(n<=1)
+	    {
+	        return n;
+	    }
+	    int fiba=0;
+	    int fibb=1;
+	    for(int i=2;i<=n;i++)
+	    {
+	        int fibo=Math.addExact(fiba,fibb); // lanza ArithmeticException si se desborda
+	        fiba=fibb;
+	        fibb=fibo;
+	    }
+	    return fibb;
 	}
 	
 	public static void main(String[] args) {
 		int num=19;
 		int fibonacciRecursivo= fibonacciRecursivo(num);
 		
-		int num1=19;
+		int num1=1;
 		int fibonacciIterativo= fibonacciIterativo(num1);
 		
 		System.out.printf("""
