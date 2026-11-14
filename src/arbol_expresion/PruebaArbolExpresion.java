@@ -2,7 +2,7 @@ package arbol_expresion;
 
 public class PruebaArbolExpresion {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         ArbolExpresion arbol = new ArbolExpresion();
 
         // Ejemplo 1: Con numeros de dos digitos -> ((25*3)+10) = 85.0
