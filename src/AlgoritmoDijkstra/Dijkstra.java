@@ -1,77 +1,95 @@
 package AlgoritmoDijkstra;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.PriorityQueue;
+import mx.unam.fes.grafos.Grafo;
+import mx.unam.fes.grafos.Arista;
+import mx.unam.fes.dinamico.ListaSimple.ListaEnlazada;
+import mx.unam.fes.dinamico.ListaSimple.Nodo;
+
+import java.util.*;
+
 public class Dijkstra {
-    // Uso de 'record' para estructuras de datos inmutables y sin código boilerplate
-    public record Arista(int destino, int peso) {}
-    
-    public record NodoDistancia(int nodo, int distanciaAcumulada) implements Comparable<NodoDistancia> {
+
+    public static class NodoDistancia<T> implements Comparable<NodoDistancia<T>> {
+        public T vertice;
+        public double distancia;
+
+        public NodoDistancia(T vertice, double distancia) {
+            this.vertice = vertice;
+            this.distancia = distancia;
+        }
+
         @Override
-        public int compareTo(NodoDistancia otro) {
-            return Integer.compare(this.distanciaAcumulada, otro.distanciaAcumulada);
+        public int compareTo(NodoDistancia<T> otro) {
+            return Double.compare(this.distancia, otro.distancia);
         }
     }
 
-    // Clase contenedora para devolver múltiples arreglos de estado sin variables globales
-    public static class ResultadoDijkstra {
-        public final int[] distancias;
-        public final int[] predecesores;
+    public static class ResultadoDijkstra<T> {
+        public final Map<T, Double> distancias;
+        public final Map<T, T> predecesores;
 
-        public ResultadoDijkstra(int[] distancias, int[] predecesores) {
+        public ResultadoDijkstra(Map<T, Double> distancias, Map<T, T> predecesores) {
             this.distancias = distancias;
             this.predecesores = predecesores;
         }
+
+        public List<T> reconstruirCamino(T destino) {
+            LinkedList<T> camino = new LinkedList<>();
+            T actual = destino;
+
+            if (!predecesores.containsKey(destino) && !distancias.containsKey(destino)) {
+                return camino;
+            }
+
+            while (actual != null) {
+                camino.addFirst(actual);
+                actual = predecesores.get(actual);
+            }
+            return camino;
+        }
     }
 
-    /**
-     * Calcula las distancias más cortas desde un nodo origen a todos los demás.
-     * 
-     * @param grafo Lista de adyacencia que representa la red de nodos.
-     * @param origen Índice del nodo donde inicia la búsqueda.
-     * @return Objeto ResultadoDijkstra con los costos mínimos y el rastro de la ruta.
-     */
-    public static ResultadoDijkstra calcularRutas(List<List<Arista>> grafo, int origen) {
-        int n = grafo.size();
-        int[] distancias = new int[n];
-        int[] predecesores = new int[n];
-        boolean[] visitados = new boolean[n];
+    public static <T> ResultadoDijkstra<T> calcularRutas(Grafo<T> grafo, T origen) {
+        Map<T, Double> distancias = new HashMap<>();
+        Map<T, T> predecesores = new HashMap<>();
+        Set<T> visitados = new HashSet<>();
 
-        // Inicialización del estado matemático del grafo
-        Arrays.fill(distancias, Integer.MAX_VALUE);
-        Arrays.fill(predecesores, -1);
-        distancias[origen] = 0;
+        for (T vertice : grafo.obtenerVertices()) {
+            distancias.put(vertice, Double.POSITIVE_INFINITY);
+        }
+        distancias.put(origen, 0.0);
 
-        // El motor de búsqueda que prioriza la ruta más barata actual
-        PriorityQueue<NodoDistancia> colaPrioridad = new PriorityQueue<>();
-        colaPrioridad.offer(new NodoDistancia(origen, 0));
+        PriorityQueue<NodoDistancia<T>> colaPrioridad = new PriorityQueue<>();
+        colaPrioridad.offer(new NodoDistancia<>(origen, 0.0));
 
         while (!colaPrioridad.isEmpty()) {
-            NodoDistancia actual = colaPrioridad.poll();
-            int u = actual.nodo;
+            NodoDistancia<T> actual = colaPrioridad.poll();
+            T u = actual.vertice;
 
-            // Evitar reevaluar nodos que ya encontraron su camino óptimo definitivo
-            if (visitados[u]) {
+            if (visitados.contains(u)) {
                 continue;
             }
-            visitados[u] = true;
+            visitados.add(u);
 
-            // Escaneo de nodos adyacentes
-            for (Arista arista : grafo.get(u)) {
-                int v = arista.destino;
-                int peso = arista.peso;
+            ListaEnlazada<Arista<T>> adyacentes = grafo.obtenerAdyacentes(u);
+            Nodo<Arista<T>> temp = adyacentes.getCabeza();
 
-                // Relajación de la arista: actualizar si encontramos un atajo
-                if (!visitados[v] && distancias[u] + peso < distancias[v]) {
-                    distancias[v] = distancias[u] + peso;
-                    predecesores[v] = u;
-                    colaPrioridad.offer(new NodoDistancia(v, distancias[v]));
+            while (temp != null) {
+                Arista<T> arista = temp.getDato();
+                T v = arista.getDestino();
+                double peso = arista.getPeso();
+
+                if (!visitados.contains(v) && distancias.get(u) + peso < distancias.get(v)) {
+                    double nuevaDistancia = distancias.get(u) + peso;
+                    distancias.put(v, nuevaDistancia);
+                    predecesores.put(v, u);
+                    colaPrioridad.offer(new NodoDistancia<>(v, nuevaDistancia));
                 }
+
+                temp = temp.getSiguiente();
             }
         }
 
-        return new ResultadoDijkstra(distancias, predecesores);
+        return new ResultadoDijkstra<>(distancias, predecesores);
     }
 }
-
