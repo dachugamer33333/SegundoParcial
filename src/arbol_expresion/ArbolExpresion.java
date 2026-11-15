@@ -1,20 +1,10 @@
 package arbol_expresion;
 
-import mx.unam.fes.dinamico.Cola;
 import mx.unam.fes.dinamico.Pila;
+import mx.unam.fes.nolineal.ArbolBinarioOrden;
 import mx.unam.fes.nolineal.Nodo;
 
-public class ArbolExpresion {
-
-    protected Nodo<String> raiz;
-
-    public ArbolExpresion() {
-        raiz = null;
-    }
-
-    public Nodo<String> getRaiz() {
-        return raiz;
-    }
+public class ArbolExpresion extends ArbolBinarioOrden<String> {
 
     public boolean esOperador(String s) {
         return s.equals("+") || s.equals("-") || s.equals("*") || s.equals("/") || s.equals("^");
@@ -94,29 +84,8 @@ public class ArbolExpresion {
         return Double.parseDouble(simbolo);
     }
 
-    public void imprimir(Nodo<String> n) {
-        System.out.println(n.getDato() + " " + n.getEtiqueta());
-    }
-
-    public void recorridoAmplitud() {
-        Nodo<String> n = raiz;
-        Cola<Nodo<String>> cola = new Cola<>();
-        if (n != null) {
-            cola.agregar(n);
-            while (!cola.esVacia()) {
-                n = cola.sacar();
-                imprimir(n);
-                if (n.getIzquierdo() != null) {
-                    cola.agregar(n.getIzquierdo());
-                }
-                if (n.getDerecho() != null) {
-                    cola.agregar(n.getDerecho());
-                }
-            }
-        }
-    }
-
     // Recorrido en Orden (LVR) para mostrar la expresion interfija
+    @Override
     public void orden(Nodo<String> n) {
         if (n != null) {
             if (esOperador(n.getDato())) {

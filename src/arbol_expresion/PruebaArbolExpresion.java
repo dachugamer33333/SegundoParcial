@@ -1,24 +1,40 @@
 package arbol_expresion;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
 public class PruebaArbolExpresion {
 
-    public static void main(String[] args) {
+    // Archivo en la raiz del proyecto, dentro de la carpeta "archivos"
+    private static final Path ARCHIVO = Paths.get("archivos", "prefija.txt");
+
+    public static void main(String[] args) throws Exception {
+        List<String> lineas = Files.readAllLines(ARCHIVO, StandardCharsets.UTF_8);
+
         ArbolExpresion arbol = new ArbolExpresion();
+        int procesadas = 0;
 
-        // Ejemplo 1: Con numeros de dos digitos -> ((25*3)+10) = 85.0
-        arbol.construirPrefija("+ * 25 3 10");
-        arbol.recorridoAmplitud();
-        System.out.print("Expresion interfija: ");
-        arbol.orden(arbol.getRaiz());
-        System.out.println("\nResultado: " + arbol.evaluar(arbol.getRaiz()));
+        // Cada linea no vacia del archivo es una expresion prefija
+        for (String linea : lineas) {
+            String expresion = linea.trim();
+            if (expresion.isEmpty()) {
+                continue;
+            }
 
-        System.out.println("----");
+            arbol.construirPrefija(expresion);
+            arbol.recorridoAmplitud();
+            System.out.print("Expresion interfija: ");
+            arbol.orden(arbol.getRaiz());
+            System.out.println("\nResultado: " + arbol.evaluar(arbol.getRaiz()));
+            System.out.println("----");
+            procesadas++;
+        }
 
-        // Ejemplo 2: De un digito sin espacios -> ((4*3)+5) = 17.0
-        arbol.construirPrefija("+*435");
-        arbol.recorridoAmplitud();
-        System.out.print("Expresion interfija: ");
-        arbol.orden(arbol.getRaiz());
-        System.out.println("\nResultado: " + arbol.evaluar(arbol.getRaiz()));
+        if (procesadas == 0) {
+            System.out.println("No hay expresiones en " + ARCHIVO.toAbsolutePath());
+        }
     }
 }
