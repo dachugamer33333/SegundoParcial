@@ -1,7 +1,7 @@
 package AlgoritmoDijkstra;
 
-import mx.unam.fes.grafos.Grafo;
-import mx.unam.fes.grafos.Arista;
+import mx.unam.fes.nolineal.grafos.Grafo;
+import mx.unam.fes.nolineal.grafos.Arista;
 import mx.unam.fes.dinamico.ListaSimple.ListaEnlazada;
 import mx.unam.fes.dinamico.ListaSimple.Nodo;
 

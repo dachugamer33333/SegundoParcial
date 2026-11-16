@@ -1,8 +1,8 @@
 package arbol_expresion;
 
 import mx.unam.fes.dinamico.Pila;
-import mx.unam.fes.nolineal.ArbolBinarioOrden;
-import mx.unam.fes.nolineal.Nodo;
+import mx.unam.fes.nolineal.arboles.ArbolBinarioOrden;
+import mx.unam.fes.nolineal.arboles.Nodo;
 
 public class ArbolExpresion extends ArbolBinarioOrden<String> {
 
